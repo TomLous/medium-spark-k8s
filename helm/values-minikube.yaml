@@ -1,0 +1,38 @@
+environment: minikube
+serviceAccount: spark
+envSecretKeyRefs:
+  POSTGRES_HOST:
+    name: apidbsecret
+    key: DB_HOST
+  POSTGRES_DB:
+    name: apidbsecret
+    key: DB_NAME
+  POSTGRES_USER:
+    name: apidbsecret
+    key: DB_USER
+  POSTGRES_PASS:
+    name: apidbsecret
+    key: DB_PASSWORD
+volumes:
+  - name: importer-data
+    hostPath:
+      path: /hazelnut-etl-importer-data
+mounts:
+  importer-data: /mnt/data
+driver:
+  cores: 1
+  memory: "2g"
+  javaOptions: "-Dconfig.resource=application.minikube.conf"
+executor:
+  instances: 2
+  cores: 1
+  memory: "1g"
+hadoopConf:
+sparkConf:
+  "spark.ui.port": 4045
+hostNetwork: false
+imagePullPolicy: Never
+imagePullSecrets: [ "test" ]
+userId: 1000
+
+

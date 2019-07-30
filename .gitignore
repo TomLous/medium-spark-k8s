@@ -1,0 +1,14 @@
+.idea*
+*.log
+.DS_Store
+project/project
+target/
+*.iml
+gen
+datasets
+application.local.conf
+jars
+.ipynb_checkpoints
+output/
+rawdata
+helm/generated-k8s.yaml

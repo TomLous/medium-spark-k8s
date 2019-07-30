@@ -1,0 +1,110 @@
+apiVersion: sparkoperator.k8s.io/v1beta1
+kind: SparkApplication
+metadata:
+  name: {{ .Chart.Name | trunc 64 }}
+  labels:
+    name: {{ .Chart.Name | trunc 63 | quote }}
+    release: {{ .Release.Name | trunc 63 | quote }}
+    revision: {{ .Release.Revision | quote }}
+    sparkVersion: {{ .Values.sparkVersion | quote }}
+    version: {{ .Chart.Version | quote }}
+spec:
+  type: Scala
+  mode: cluster
+  image: {{ .Values.image | quote }}
+  imagePullPolicy: {{ .Values.imagePullPolicy }}
+  mainClass: {{ .Values.mainClass | quote }}
+  mainApplicationFile: {{ .Values.jar | quote }}
+  sparkVersion: {{ .Values.sparkVersion | quote }}
+  restartPolicy:
+    type: Never
+  deps:
+    {{- if .Values.jarDependencies }}
+    jars:
+    {{- range .Values.jarDependencies }}
+      - {{ . | quote }}
+    {{- end }}
+    {{- end }}
+    {{- if .Values.fileDependencies }}
+    files:
+    {{- range .Values.fileDependencies }}
+      - {{ . | quote }}
+    {{- end }}
+    {{- end }}
+    {{- if .Values.sparkConf }}
+    sparkConf:
+    {{- range $conf, $value := .Values.sparkConf }}
+      {{ $conf | quote }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
+    {{- if .Values.hadoopConf }}
+    hadoopConf:
+    {{- range $conf, $value := .Values.hadoopConf }}
+      {{ $conf | quote }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
+  driver:
+    {{- if .Values.envSecretKeyRefs }}
+    envSecretKeyRefs:
+    {{- range $name, $value := .Values.envSecretKeyRefs }}
+      {{ $name }}:
+        name: {{ $value.name}}
+        key: {{ $value.key}}
+    {{- end }}
+    {{- end }}
+    securityContext:
+      runAsUser: {{ .Values.userId }}
+    cores: {{ .Values.driver.cores }}
+    coreLimit: {{ .Values.driver.coreLimit }}
+    memory: {{ .Values.driver.memory }}
+    hostNetwork: {{ .Values.hostNetwork }}
+    labels:
+      release: {{ .Release.Name | trunc 63 | quote }}
+      revision: {{ .Release.Revision | quote }}
+      sparkVersion: {{ .Values.sparkVersion | quote }}
+      version: {{ .Chart.Version | quote }}
+    serviceAccount: {{ .Values.serviceAccount }}
+    {{- if .Values.driver.javaOptions }}
+    javaOptions: {{ .Values.driver.javaOptions | quote}}
+    {{- end }}
+    {{- if .Values.mounts }}
+    volumeMounts:
+    {{- range $name, $path := .Values.mounts }}
+      - name: {{ $name }}
+        mountPath: {{ $path }}
+    {{- end }}
+    {{- end }}
+  executor:
+    securityContext:
+      runAsUser: {{ .Values.userId }}
+    cores: {{ .Values.executor.cores }}
+    instances: {{ .Values.executor.instances }}
+    memory: {{ .Values.executor.memory }}
+    labels:
+      release: {{ .Release.Name | trunc 63 | quote }}
+      revision: {{ .Release.Revision | quote }}
+      sparkVersion: {{ .Values.sparkVersion | quote }}
+      version: {{ .Chart.Version | quote }}
+    serviceAccount: {{ .Values.serviceAccount }}
+    {{- if .Values.executor.javaOptions }}
+    javaOptions: {{ .Values.executor.javaOptions }}
+    {{- end }}
+    {{- if .Values.mounts }}
+    volumeMounts:
+    {{- range $name, $path := .Values.mounts }}
+      - name: {{ $name }}
+        mountPath: {{ $path }}
+    {{- end }}
+    {{- end }}
+  {{- if .Values.jmxExporterJar }}
+  monitoring:
+    exposeDriverMetrics: true
+    exposeExecutorMetrics: true
+    prometheus:
+      port: {{ .Values.jmxPort | default 8090 }}
+      jmxExporterJar: {{ .Values.jmxExporterJar }}
+  {{- end }}
+  {{- if .Values.volumes }}
+  volumes:
+{{ toYaml .Values.volumes | indent 3 }}
+  {{- end }}
