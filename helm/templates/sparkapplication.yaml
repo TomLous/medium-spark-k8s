@@ -1,4 +1,4 @@
-apiVersion: sparkoperator.k8s.io/v1beta1
+apiVersion: sparkoperator.k8s.io/v1beta2
 kind: SparkApplication
 metadata:
   name: {{ .Chart.Name | trunc 64 }}
@@ -13,6 +13,12 @@ spec:
   mode: cluster
   image: {{ .Values.image | quote }}
   imagePullPolicy: {{ .Values.imagePullPolicy }}
+  {{- if .Values.imagePullSecrets }}
+  imagePullSecrets:
+  {{- range .Values.imagePullSecrets }}
+    - {{ . | quote }}
+  {{- end }}
+  {{- end }}
   mainClass: {{ .Values.mainClass | quote }}
   mainApplicationFile: {{ .Values.jar | quote }}
   sparkVersion: {{ .Values.sparkVersion | quote }}
@@ -52,10 +58,16 @@ spec:
         key: {{ $value.key}}
     {{- end }}
     {{- end }}
+    {{- if .Values.envVars }}
+    envVars:
+    {{- range $name, $value := .Values.envVars }}
+      {{ $name }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
     securityContext:
       runAsUser: {{ .Values.userId }}
     cores: {{ .Values.driver.cores }}
-    coreLimit: {{ .Values.driver.coreLimit }}
+    coreLimit: {{ .Values.driver.coreLimit | default .Values.driver.cores | quote }}
     memory: {{ .Values.driver.memory }}
     hostNetwork: {{ .Values.hostNetwork }}
     labels:
@@ -75,9 +87,16 @@ spec:
     {{- end }}
     {{- end }}
   executor:
+    {{- if .Values.envVars }}
+    envVars:
+    {{- range $name, $value := .Values.envVars }}
+      {{ $name | quote }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
     securityContext:
       runAsUser: {{ .Values.userId }}
     cores: {{ .Values.executor.cores }}
+    coreLimit: {{ .Values.executor.coreLimit | default .Values.executor.cores | quote }}
     instances: {{ .Values.executor.instances }}
     memory: {{ .Values.executor.memory }}
     labels:
