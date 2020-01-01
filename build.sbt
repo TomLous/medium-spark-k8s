@@ -82,7 +82,7 @@ lazy val createImporterHelmChart: Def.Initialize[Task[Seq[File]]] = Def.task {
        |version: ${version.value}
        |appVersion: ${version.value}
        |description: Sample ETL Job for Medium Post
-       |home: url
+       |home: http://bit.ly/spark-k8s
        |sources:
        |  - https://github.com/TomLous/medium-spark-k8s
        |maintainers: 
