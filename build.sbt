@@ -57,7 +57,7 @@ lazy val runLocalSettings = Seq(
 )
 
 
-val root = (project in file("."))
+lazy val root = (project in file("."))
   .enablePlugins(sbtdocker.DockerPlugin)
   .enablePlugins(AshScriptPlugin)
   .settings(
@@ -82,7 +82,7 @@ lazy val createImporterHelmChart: Def.Initialize[Task[Seq[File]]] = Def.task {
        |version: ${version.value}
        |appVersion: ${version.value}
        |description: Sample ETL Job for Medium Post
-       |home: [url to post]
+       |home: url
        |sources:
        |  - https://github.com/TomLous/medium-spark-k8s
        |maintainers: 
@@ -96,7 +96,7 @@ lazy val createImporterHelmChart: Def.Initialize[Task[Seq[File]]] = Def.task {
        |version: ${version.value}
        |sparkVersion: ${sparkVersion}
        |image: $domain/${name.value}:${version.value}
-       |imageRegistry: localhost:5000
+       |imageRegistry:
        |jar: local://$targetDockerJarPath/$domain-${name.value}.jar
        |mainClass: ${(Compile / run / mainClass).value.getOrElse("__MAIN_CLASS__")}
        |fileDependencies: []

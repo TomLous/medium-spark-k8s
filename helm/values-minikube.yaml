@@ -1,14 +1,18 @@
 environment: minikube
-serviceAccount: spark
-envVars:
-  INPUT_PATH: "/mnt/data/"
-  DEBUG_SPARK_CONFIG: 6
+serviceAccount: spark-spark
+arguments:
+  - "/mnt/data-in/"
+  - "/mnt/data-out/"
 volumes:
-  - name: importer-data
+  - name: input-data
     hostPath:
-      path: /hazelnut-data
+      path: /input-data
+  - name: output-data
+    hostPath:
+      path: /output-data
 mounts:
-  importer-data: /mnt/data
+  input-data: /mnt/data-in
+  output-data: /mnt/data-out
 driver:
   cores: 1
   memory: "2g"

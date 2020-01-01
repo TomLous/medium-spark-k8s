@@ -1,5 +1,6 @@
 package xyz.graphiq
 
+import org.apache.spark.SparkConf
 import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
 import xyz.graphiq.model._
@@ -12,7 +13,9 @@ object BasicSparkJob extends App {
 
   val spark: SparkSession = SparkSession
     .builder()
-    .master("local[*]")
+    .config(
+      new SparkConf().setIfMissing("master", "local[*]")
+    )
     .appName("BasicSparkJob")
     .getOrCreate()
 
@@ -58,6 +61,6 @@ object BasicSparkJob extends App {
     .repartition(20)
     .write
     .mode(SaveMode.Overwrite)
-    .parquet(outputPath)
+    .parquet(s"$outputPath/movie-ratings")
 
 }

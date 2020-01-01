@@ -21,6 +21,12 @@ spec:
   {{- end }}
   mainClass: {{ .Values.mainClass | quote }}
   mainApplicationFile: {{ .Values.jar | quote }}
+  {{- if .Values.arguments }}
+  arguments:
+  {{- range .Values.arguments }}
+    - {{ . | quote }}
+  {{- end }}
+  {{- end }}
   sparkVersion: {{ .Values.sparkVersion | quote }}
   restartPolicy:
     type: Never

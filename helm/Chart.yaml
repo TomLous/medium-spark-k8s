@@ -4,7 +4,7 @@ name: graphiq-transform-movie-ratings
 version: 0.1
 appVersion: 0.1
 description: Sample ETL Job for Medium Post
-home: [url to post]
+home: ff
 sources:
   - https://github.com/TomLous/medium-spark-k8s
 maintainers: 

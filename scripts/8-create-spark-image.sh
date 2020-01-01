@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 cd ${BASH_SOURCE%/*}/..
 
-sbt docker
+eval $(minikube docker-env)
+
+sbt clean docker
