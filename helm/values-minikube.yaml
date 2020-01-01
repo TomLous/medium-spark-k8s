@@ -1,24 +1,23 @@
 environment: minikube
 serviceAccount: spark
+envVars:
+  INPUT_PATH: "/mnt/data/"
+  DEBUG_SPARK_CONFIG: 6
 volumes:
   - name: importer-data
     hostPath:
-      path: /hazelnut-etl-importer-data
+      path: /hazelnut-data
 mounts:
   importer-data: /mnt/data
 driver:
   cores: 1
   memory: "2g"
-  javaOptions: "-Dconfig.resource=application.minikube.conf"
 executor:
-  instances: 4
+  instances: 2
   cores: 1
-  memory: "500m"
+  memory: "1g"
 hadoopConf:
 sparkConf:
-  "spark.ui.port": 4040
 hostNetwork: false
 imagePullPolicy: Never
-userId: 1000
-envVars:
-  INPUT_PATH: "hazelnut-testdata"
+userId: 0

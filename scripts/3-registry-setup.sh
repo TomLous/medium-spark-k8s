@@ -2,10 +2,6 @@
 
 eval $(minikube docker-env)
 
-mkdir -p ~/.minikube/files/registry-data
-docker run -d \
- --name registry \
- --restart=always \
- -p 5000:5000 \
- -v ~/.minikube/files/registry-data:/var/lib/registry \
- registry:2
+echo "Already there?"
+
+curl -s $(minikube ip):5000/v2/_catalog | jq

@@ -1,9 +1,9 @@
 apiVersion: sparkoperator.k8s.io/v1beta2
 kind: SparkApplication
 metadata:
-  name: {{ .Chart.Name | trunc 64 }}
+  name:  {{ .Release.Name | trunc 63 }}
   labels:
-    name: {{ .Chart.Name | trunc 63 | quote }}
+    chartname: {{ .Chart.Name | trunc 63 | quote }}
     release: {{ .Release.Name | trunc 63 | quote }}
     revision: {{ .Release.Revision | quote }}
     sparkVersion: {{ .Values.sparkVersion | quote }}
@@ -11,7 +11,7 @@ metadata:
 spec:
   type: Scala
   mode: cluster
-  image: {{ .Values.image | quote }}
+  image: {{ list .Values.imageRegistry .Values.image | join "/" | quote }}
   imagePullPolicy: {{ .Values.imagePullPolicy }}
   {{- if .Values.imagePullSecrets }}
   imagePullSecrets:
@@ -24,6 +24,7 @@ spec:
   sparkVersion: {{ .Values.sparkVersion | quote }}
   restartPolicy:
     type: Never
+  {{- if or .Values.jarDependencies .Values.fileDependencies .Values.sparkConf .Values.hadoopConf }}
   deps:
     {{- if .Values.jarDependencies }}
     jars:
@@ -49,6 +50,7 @@ spec:
       {{ $conf | quote }}: {{ $value | quote }}
     {{- end }}
     {{- end }}
+  {{- end }}
   driver:
     {{- if .Values.envSecretKeyRefs }}
     envSecretKeyRefs:
@@ -76,8 +78,8 @@ spec:
       sparkVersion: {{ .Values.sparkVersion | quote }}
       version: {{ .Chart.Version | quote }}
     serviceAccount: {{ .Values.serviceAccount }}
-    {{- if .Values.driver.javaOptions }}
-    javaOptions: {{ .Values.driver.javaOptions | quote}}
+    {{- if .Values.javaOptions }}
+    javaOptions: {{ .Values.javaOptions | quote}}
     {{- end }}
     {{- if .Values.mounts }}
     volumeMounts:
@@ -85,6 +87,10 @@ spec:
       - name: {{ $name }}
         mountPath: {{ $path }}
     {{- end }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+    tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
     {{- end }}
   executor:
     {{- if .Values.envVars }}
@@ -105,8 +111,8 @@ spec:
       sparkVersion: {{ .Values.sparkVersion | quote }}
       version: {{ .Chart.Version | quote }}
     serviceAccount: {{ .Values.serviceAccount }}
-    {{- if .Values.executor.javaOptions }}
-    javaOptions: {{ .Values.executor.javaOptions }}
+    {{- if .Values.javaOptions }}
+    javaOptions: {{ .Values.javaOptions }}
     {{- end }}
     {{- if .Values.mounts }}
     volumeMounts:
@@ -114,6 +120,10 @@ spec:
       - name: {{ $name }}
         mountPath: {{ $path }}
     {{- end }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+    tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
     {{- end }}
   {{- if .Values.jmxExporterJar }}
   monitoring:
@@ -126,4 +136,8 @@ spec:
   {{- if .Values.volumes }}
   volumes:
 {{ toYaml .Values.volumes | indent 3 }}
+  {{- end }}
+  {{- if .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}
   {{- end }}

@@ -12,4 +12,6 @@ docker run -d \
   -e DEBUG=true \
   -e STORAGE=local \
   -e STORAGE_LOCAL_ROOTDIR=/charts \
-  chartmuseum/chartmuseum:v0.8.1
+  chartmuseum/chartmuseum:v0.11.0
+
+curl $(minikube ip):8080/index.yaml

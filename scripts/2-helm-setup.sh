@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 
-brew install kubernetes-helm
+brew install helm
 
-helm init --history-max 20
