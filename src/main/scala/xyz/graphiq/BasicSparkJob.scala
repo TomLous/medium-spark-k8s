@@ -14,7 +14,7 @@ object BasicSparkJob extends App {
   val spark: SparkSession = SparkSession
     .builder()
     .config(
-      new SparkConf().setIfMissing("master", "local[]")
+      new SparkConf().setIfMissing("spark.master", "local[*]")
     )
     .appName("BasicSparkJob")
     .getOrCreate()
