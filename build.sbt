@@ -1,4 +1,4 @@
-val sparkVersion = "2.4.4"
+val sparkVersion = "2.4.5"
 
 val sparkLibs = Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion % "provided",

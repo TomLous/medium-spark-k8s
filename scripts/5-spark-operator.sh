@@ -2,8 +2,8 @@
 cd ${BASH_SOURCE%/*}
 
 
-kubectl create -f files/namespaces-spark.yaml
-
+kubectl create namespace spark-operator
+kubectl create namespace spark-apps
 
 kubectl create serviceaccount spark \
  --namespace=spark-operator
@@ -18,7 +18,6 @@ helm repo add incubator \
 
 helm install spark \
  incubator/sparkoperator \
- --version 0.6.1 \
  --skip-crds \
  --namespace spark-operator \
  --set enableWebhook=true,sparkJobNamespace=spark-apps,logLevel=3

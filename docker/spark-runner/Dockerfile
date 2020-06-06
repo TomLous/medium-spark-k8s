@@ -9,11 +9,14 @@ ARG VCS_REF
 ARG BUILD_DATE
 
 ENV SCALA_VERSION 2.12
-ENV SPARK_VERSION 2.4.4
+ENV SPARK_VERSION 2.4.5
 ENV HADOOP_VERSION 3.2.1
 ENV KUBERNETES_CLIENT_VERSION 4.6.4
+ENV JMX_PROMETHEUS_VERSION 0.12.0
 
-ENV REPO_URL http://central.maven.org/maven2
+
+
+ENV REPO_URL https://repo1.maven.org/maven2
 ENV ARCHIVE_URL http://archive.apache.org/dist
 
 # Adhere to opencontainers image spec https://github.com/opencontainers/image-spec/blob/master/annotations.md
@@ -61,6 +64,13 @@ RUN rm -rf ${SPARK_HOME}/ \
     && echo 'export SPARK_EXTRA_CLASSPATH=$(hadoop classpath)' >> ${SPARK_HOME}/conf-org/spark-env.sh
 
 ENV PATH="${SPARK_HOME}/bin:${PATH}"
+
+# Add Prometheus metrics (like: https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/spark-docker/Dockerfile)
+RUN mkdir -p /etc/metrics/conf
+RUN mkdir -p /prometheus
+ADD ${REPO_URL}/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_PROMETHEUS_VERSION}/jmx_prometheus_javaagent-${JMX_PROMETHEUS_VERSION}.jar /prometheus/jmx_prometheus_javaagent.jar
+COPY conf/metrics.properties /etc/metrics/conf
+COPY conf/prometheus.yaml /etc/metrics/conf
 
 
 # Kubernetes Client  <= TODO Remove when this issue is fixed https://andygrove.io/2019/08/apache-spark-regressions-eks/
