@@ -23,6 +23,10 @@ lazy val assemblySettings = Seq(
 
 val targetDockerJarPath = "/opt/spark/jars"
 
+
+val baseRegistry = sys.props.getOrElse("baseRegistry", default = "localhost:5000")
+
+
 // For building the docker image
 lazy val dockerSettings = Seq(
   imageNames in docker := Seq(
@@ -39,7 +43,7 @@ lazy val dockerSettings = Seq(
     val artifact: File = assembly.value
     val artifactTargetPath = s"$targetDockerJarPath/$domain-${name.value}.jar"
       new Dockerfile {
-        from(s"localhost:5000/spark-runner:0.1")
+        from(s"$baseRegistry/spark-runner:0.1")
       }.add(artifact, artifactTargetPath)
   }
 )
@@ -96,7 +100,6 @@ lazy val createImporterHelmChart: Def.Initialize[Task[Seq[File]]] = Def.task {
        |version: ${version.value}
        |sparkVersion: ${sparkVersion}
        |image: $domain/${name.value}:${version.value}
-       |imageRegistry:
        |jar: local://$targetDockerJarPath/$domain-${name.value}.jar
        |mainClass: ${(Compile / run / mainClass).value.getOrElse("__MAIN_CLASS__")}
        |fileDependencies: []

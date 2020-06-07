@@ -25,6 +25,8 @@ object BasicSparkJob extends App {
   val inputPath = args(0)
   val outputPath = args(1)
 
+  println(s"Reading data from $inputPath")
+
 
   // define movie dataset
   val movieSchema = Encoders.product[Movie].schema
@@ -48,7 +50,7 @@ object BasicSparkJob extends App {
 
 
   // combine and group and save
-  ratingDataset
+  val combined = ratingDataset
     .join(broadcast(moviesDataset), "movieId")
     .groupBy('movieId)
     .agg(
@@ -59,8 +61,16 @@ object BasicSparkJob extends App {
     .select('movieId, 'title, 'averageRating, 'numberOfRatings)
     .as[MovieRating]
     .repartition(20)
-    .write
+
+  println(s"Writing ${combined.count()} records to $outputPath/movie-ratings")
+
+  combined.write
     .mode(SaveMode.Overwrite)
     .parquet(s"$outputPath/movie-ratings")
+
+
+  println("Done")
+
+
 
 }

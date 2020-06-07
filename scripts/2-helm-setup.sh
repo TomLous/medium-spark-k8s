@@ -2,4 +2,4 @@
 
 brew install helm
 
-#helm plugin install https://github.com/chartmuseum/helm-push
+helm plugin install https://github.com/chartmuseum/helm-push

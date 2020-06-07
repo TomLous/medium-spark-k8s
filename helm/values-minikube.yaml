@@ -1,5 +1,6 @@
 environment: minikube
 serviceAccount: spark-spark
+imageRegistry: localhost:5000
 arguments:
   - "/mnt/data-in/"
   - "/mnt/data-out/"

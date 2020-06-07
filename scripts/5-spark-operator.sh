@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 cd ${BASH_SOURCE%/*}
 
-
 kubectl create namespace spark-operator
 kubectl create namespace spark-apps
 

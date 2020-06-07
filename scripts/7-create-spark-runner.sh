@@ -16,3 +16,6 @@ docker build \
     -t ${registry}/${name}:${version} . \
 && docker push ${registry}/${name}:${version} \
 && echo "Build & pushed ${registry}/${name}:${version}"
+
+
+curl -s $(minikube ip):5000/v2/_catalog | jq

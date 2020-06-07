@@ -2,7 +2,6 @@
 version: 0.1
 sparkVersion: 2.4.5
 image: graphiq/transform-movie-ratings:0.1
-imageRegistry:
 jar: local:///opt/spark/jars/graphiq-transform-movie-ratings.jar
 mainClass: xyz.graphiq.BasicSparkJob
 fileDependencies: []

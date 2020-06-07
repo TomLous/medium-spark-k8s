@@ -14,7 +14,7 @@ helm upgrade movie-ratings-transform \
 helm repo add chartmuseum http://$(minikube ip):8080
 helm repo update
 helm upgrade movie-ratings-transform \
- chartmuseum/movie-ratings-transform \
+ chartmuseum/graphiq-transform-movie-ratings \
  --namespace=spark-apps \
  --install \
  --force
