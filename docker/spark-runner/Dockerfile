@@ -1,7 +1,7 @@
 # Information
 # Main Spark Docker file code: https://github.com/apache/spark/blob/master/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile
 
-ARG SPARK_IMAGE=gcr.io/spark-operator/spark:v2.4.4
+ARG SPARK_IMAGE=gcr.io/spark-operator/spark:v2.4.5
 FROM ${SPARK_IMAGE}
 
 ARG VERSION
@@ -13,7 +13,6 @@ ENV SPARK_VERSION 2.4.5
 ENV HADOOP_VERSION 3.2.1
 ENV KUBERNETES_CLIENT_VERSION 4.6.4
 ENV JMX_PROMETHEUS_VERSION 0.12.0
-
 
 
 ENV REPO_URL https://repo1.maven.org/maven2
@@ -35,7 +34,8 @@ LABEL org.opencontainers.image.title="graphiq-spark-runner" \
       version.kubernetes-client=${KUBERNETES_CLIENT_VERSION}
 
 # Install Tools
-RUN apk --no-cache add curl
+RUN apt-get update \
+    && apt-get install -y curl
 
 # Hadoop Config
 ENV HADOOP_HOME "/opt/hadoop"
