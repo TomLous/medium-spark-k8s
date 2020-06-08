@@ -8,7 +8,7 @@ val sparkLibs = Seq(
 lazy val commonSettings = Seq(
   organization := "xyz.graphiq",
   scalaVersion := "2.12.10",
-  version := "0.1",
+  version := "0.2",
   libraryDependencies ++= sparkLibs
 )
 
@@ -108,4 +108,9 @@ lazy val createImporterHelmChart: Def.Initialize[Task[Seq[File]]] = Def.task {
   IO.write(chartFile, chartContents)
   IO.write(valuesFile, valuesContents)
   Seq(chartFile, valuesFile)
+}
+
+lazy val showVersion = taskKey[Unit]("Show version")
+showVersion := {
+  println((version).value)
 }

@@ -71,6 +71,7 @@ object BasicSparkJob extends App {
 
   println("Done")
 
+  spark.stop()
 
 
 }
