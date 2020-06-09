@@ -8,7 +8,7 @@ sbt -DbaseRegistry=$(minikube ip):5000 clean docker
 
 version=$(sbt -error showVersion)
 relativeRegistry="localhost:5000"
-docker tag  graphiq/transform-movie-ratings:0.1 ${relativeRegistry}/graphiq/transform-movie-ratings:${version}
+docker tag  graphiq/transform-movie-ratings:${version} ${relativeRegistry}/graphiq/transform-movie-ratings:${version}
 docker push ${relativeRegistry}/graphiq/transform-movie-ratings:${version}
 
 
