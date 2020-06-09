@@ -8,7 +8,7 @@ val sparkLibs = Seq(
 lazy val commonSettings = Seq(
   organization := "xyz.graphiq",
   scalaVersion := "2.12.10",
-  version := "0.2",
+  version := "0.1",
   libraryDependencies ++= sparkLibs
 )
 
